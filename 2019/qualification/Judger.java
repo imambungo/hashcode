@@ -40,6 +40,12 @@ class Judger
 				slides[i].numberOfTags = slides[i].tags.length;
 			}
 		}
+
+		// Calculate score
+		int score = 0;
+		for (int i = 0; i < numberOfSlides-1; ++i)
+			score += transitionScore(slides[i], slides[i + 1]);
+		System.out.println(score);
 	}
 
 	static String[] unionTags(String[] firstTags, String[] secondTags)
@@ -54,6 +60,20 @@ class Judger
 
 		String[] returnTags = unionTags.toArray(new String[0]);
 		return returnTags;
+	}
+
+	static int transitionScore(Slide firstSlide, Slide secondSlide)
+	{
+		int unionTags = unionTags(firstSlide.tags, secondSlide.tags).length;
+		int firstSlideUniqueTags = unionTags - secondSlide.numberOfTags;
+		int secondSlideUniqueTags = unionTags - firstSlide.numberOfTags;
+		int commonTags = unionTags - firstSlideUniqueTags
+		                           - secondSlideUniqueTags;
+		int interestFactor = Math.min(
+			Math.min(firstSlideUniqueTags, secondSlideUniqueTags),
+			commonTags
+		);
+		return interestFactor;
 	}
 }
 
